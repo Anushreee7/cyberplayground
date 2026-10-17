@@ -1,0 +1,33 @@
+<?php
+$host = '192.168.100.30';
+$db   = 'vulndb';
+$user = 'webapp';
+$pass = 'dbpassword';
+$conn = mysqli_connect($host, $user, $pass, $db);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    // VULNERABLE: Directly concatenating user input into the SQL query
+    $query = "SELECT * FROM users WHERE username='" . $username . "' AND password='" . $password . "'";
+    $result = mysqli_query($conn, $query);
+    if (mysqli_num_rows($result) > 0) {
+        echo "<h2>Login Successful! Welcome, " . htmlspecialchars($username) . "</h2>";
+    } else {
+        echo "<h2>Invalid Credentials</h2>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Vulnerable Login (Version 1)</h2>
+    <form method="POST" action="login.php">
+        Username: <input type="text" name="username"><br><br>
+        Password: <input type="password" name="password"><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
