@@ -1,0 +1,36 @@
+<?php
+$host = '192.168.100.30';
+$db   = 'vulndb';
+$user = 'webapp';
+$pass = 'dbpassword';
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	$comment =  $_POST['comment'];
+       // prepared
+    $query = "insert into comments (comment_text) values ('$comment')";
+    mysqli_query($conn, $query);
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comments</title>
+</head>
+<body>
+    <h2>Enter Comment</h2>
+    <form method="POST" action="comments.php">
+		  <textarea name="comment" rows="4" cols="30" placeholder="Write a comment..."></textarea><br><br>
+      <input type = "submit" value = "Post">
+    </form>
+    <hr>
+    <h2>Comments</h2>
+  <?php
+  $result=mysqli_query($conn, "select * from comments");
+while ($row = mysqli_query_assoc($result)){
+  echo "<div>".$row['comment_text'] . "</div><br>";
+}
+?>
+</body>
+</html>
