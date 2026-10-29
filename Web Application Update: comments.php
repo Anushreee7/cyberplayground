@@ -6,7 +6,7 @@ $pass = 'dbpassword';
 
 $conn = mysqli_connect($host, $user, $pass, $db);
   
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST['comment'])){
 	$comment =  $_POST['comment'];
        // prepared
     $query = "insert into comments (comment_text) values ('$comment')";
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Enter Comment</h2>
     <form method="POST" action="comments.php">
 		  <textarea name="comment" rows="4" cols="30" placeholder="Write a comment..."></textarea><br><br>
-      <input type = "submit" value = "Post">
+      <input type = "submit" value = "POST">
     </form>
     <hr>
     <h2>Comments</h2>
