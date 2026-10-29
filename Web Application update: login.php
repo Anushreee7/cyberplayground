@@ -1,0 +1,48 @@
+<?php
+$host = '192.168.100.30';
+$db   = 'vulndb';
+$user = 'webapp';
+$pass = 'dbpassword';
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	$username =  $_POST['username'];
+	$password = $_POST['password'];
+       // prepared
+    $query = "SELECT * FROM users WHERE username= ? AND password= ? ";
+    
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $query)) {
+	    echo "SQL error: " . mysqli_error($conn);
+    } else {
+	   mysqli_stmt_bind_param($stmt, "ss" , $username, $password);
+	   mysqli_stmt_execute($stmt);
+    
+    	$result = mysqli_stmt_get_result($stmt);
+	    if (mysqli_num_rows($result) > 0) {
+    	    echo "<h2>Login Successful! Welcome, " . $username . "</h2>";
+          echo '<br><a href="comments.php"><button style="padding:10px 20px; font-size: 16px; cursos: pointer;""Go to Comments PAge</button></a>';
+	    } else {
+    	    echo "<h2>Invalid Credentials: " . $username . "</h2>";
+    	}
+		mysqli_stmt_close($stmt);
+}
+?>
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Vulnerable Login (Version 2)</h2>
+    <form method="POST" action="login.php">
+		<fieldset>
+			<legend>Login</legend>
+			Username: <input type="text" name="username"><br><br>
+			Password: <input type="password" name="password"><br><br>
+			<input type="submit" value="Login">
+		</fieldset>
+    </form>
+</body>
+</html>
